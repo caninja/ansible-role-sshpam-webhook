@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: "caninja"
+  description: "Ansible role to send SSHPAM notifications to Slack or discord, or custom webhook"
+  company: "yes"
+  license: "MIT"
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - ssh
+    - security
+    - notifications
+dependencies: []
+

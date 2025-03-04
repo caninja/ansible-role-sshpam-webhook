@@ -1,0 +1,6 @@
+---
+slack_webhook_url: ""
+discord_webhook_url: ""
+n8n_webhook_url: ""
+custom_webhook_url: ""
+

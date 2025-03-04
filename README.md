@@ -1,8 +1,9 @@
 # ansible-role-sshpam-webhook
 webhook for sshpam
 
-This Ansible role sends notifications to Slack or Discord whenever an SSH login is detected on the server. It can be easily integrated into your existing playbooks.
+This Ansible role "sshpams" or sends notifications to webhook on detected SSH login. It can be easily integrated into your existing playbooks.
 Can easily be extended to send notifications to other services, it is just curl.
+
 
 ## Requirements
 - `Discord webhook, slack or custom webhook endpoint`

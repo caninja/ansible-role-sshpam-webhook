@@ -1,0 +1,17 @@
+---
+- name: Copy SSH notification script
+  template:
+    src: notify.sh.j2
+    dest: /root/notify.sh
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Ensure SSH login trigger in PAM
+  lineinfile:
+    path: /etc/pam.d/sshd
+    line: "session optional pam_exec.so seteuid /root/notify.sh"
+    state: present
+    backup: yes
+
+# Did not need to restart the ssh service in my tests, so this is it

@@ -1,0 +1,51 @@
+#!/bin/bash
+# TODO do some better looping logic
+
+SLACK_WEBHOOK="{{ slack_webhook_url | default('') }}"
+DISCORD_WEBHOOK="{{ discord_webhook_url | default('') }}"
+CUSTOM_WEBHOOK="{{ custom_webhook_url | default('') }}"
+n8n_WEBHOOK="{{ n8n_webhook_url | default('') }}"
+CURL="/usr/bin/curl"
+
+# no login event
+if [ "$PAM_TYPE" != "open_session" ]; then
+  exit 0
+fi
+
+USER="$PAM_USER"
+IP="${PAM_RHOST:-unknown}"
+DATE=$(date +"%Y-%m-%d %H:%M:%S")
+HOSTNAME=$(hostname)
+
+# ip loc api
+#IP_LOC=$(curl -s -X GET "someapiwithyourkey/$IP" | jq -r '.ipData | "\(.country), \(.city), \(.isp)"')
+
+MESSAGE="SSHPAM \n👤 _User:_ $USER logged into $HOSTNAME \n📍 _IP:_ $IP \n🕒 _Time:_ $DATE\n "
+
+
+# If webhook is set, send notification to Slack
+if [[ -n "$SLACK_WEBHOOK" ]]; then
+  PAYLOAD="{\"text\": \"$MESSAGE\"}"
+  $CURL -s -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$SLACK_WEBHOOK" > /dev/null 2>&1
+fi
+
+# If webhook is set, send notification to Discord
+if [[ -n "$DISCORD_WEBHOOK" ]]; then
+  PAYLOAD="{\"content\": \"$MESSAGE\"}"
+  $CURL -s -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK" > /dev/null 2>&1
+fi
+
+# If webhook is set, send notification to n8n
+if [[ -n "$n8n_WEBHOOK" ]]; then
+  PAYLOAD="{\"content\": \"$MESSAGE\"}"
+  $CURL -s -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$n8n_WEBHOOK" > /dev/null 2>&1
+fi
+
+# If webhook is set, send notification to custom
+if [[ -n "$CUSTOM_WEBHOOK" ]]; then
+  PAYLOAD="{\"content\": \"$MESSAGE\"}"
+  $CURL -s -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$CUSTOM_WEBHOOK" > /dev/null 2>&1
+fi
+
+exit 0
+
